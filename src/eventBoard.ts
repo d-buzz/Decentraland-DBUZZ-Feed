@@ -9,7 +9,6 @@ export async function createEventsBoard(position: TranformConstructorArgs) {
   }
 
   board.addComponent(new Transform({}))
-  board.addComponent(new GLTFShape('models/events-UI.glb'))
   board.setParent(boardBase)
 
   boardBase.addComponent(new Transform(position))
@@ -18,8 +17,8 @@ export async function createEventsBoard(position: TranformConstructorArgs) {
   image.addComponent(new PlaneShape())
   image.addComponent(
     new Transform({
-      position: new Vector3(0, 0.4, -0.04),
-      scale: new Vector3(4.25, 2.125, 1),
+      position: new Vector3(0, 0.4, -0.0),
+      scale: new Vector3(14.25, 12.125, 0),
       rotation: Quaternion.Euler(0, 0, 180),
     })
   )
@@ -29,8 +28,8 @@ export async function createEventsBoard(position: TranformConstructorArgs) {
   imageBackSide.addComponent(new PlaneShape())
   imageBackSide.addComponent(
     new Transform({
-      position: new Vector3(0, 0.4, 0.04),
-      scale: new Vector3(4.25, 2.125, 1),
+      position: new Vector3(0, 0.4, 0.0),
+      scale: new Vector3(14.25, 12.125, 0),
       rotation: Quaternion.Euler(0, 180, 180),
     })
   )
@@ -38,31 +37,33 @@ export async function createEventsBoard(position: TranformConstructorArgs) {
   imageBackSide.setParent(boardBase)
 
   title.addComponent(new TextShape(''))
-  title.getComponent(TextShape).fontSize = 3
+  title.getComponent(TextShape).fontSize = 2
   title.getComponent(TextShape).font = new Font(Fonts.SanFrancisco)
   title.getComponent(TextShape).color = Color3.Black()
   title.getComponent(TextShape).hTextAlign = 'left'
-  title.getComponent(TextShape).lineCount = 2
-  title.getComponent(TextShape).height = 2
-  title.getComponent(TextShape).width = 8
+  title.getComponent(TextShape).lineCount = 5
+  title.getComponent(TextShape).height = 1
+  title.getComponent(TextShape).width = 10
+  title.getComponent(TextShape).textWrapping = true
   title.addComponent(
     new Transform({
-      position: new Vector3(-1.94, -1.05, -0.04),
+      position: new Vector3(-0.94, -1.05, -0.14),
     })
   )
   title.setParent(boardBase)
 
   titleBackSide.addComponent(new TextShape(''))
-  titleBackSide.getComponent(TextShape).fontSize = 3
+  titleBackSide.getComponent(TextShape).fontSize = 2
   titleBackSide.getComponent(TextShape).font = new Font(Fonts.SanFrancisco)
   titleBackSide.getComponent(TextShape).color = Color3.Black()
   titleBackSide.getComponent(TextShape).hTextAlign = 'left'
-  titleBackSide.getComponent(TextShape).lineCount = 2
-  titleBackSide.getComponent(TextShape).height = 2
-  titleBackSide.getComponent(TextShape).width = 8
+  titleBackSide.getComponent(TextShape).lineCount = 5
+  titleBackSide.getComponent(TextShape).height = 1
+  titleBackSide.getComponent(TextShape).width = 10
+  titleBackSide.getComponent(TextShape).textWrapping = true
   titleBackSide.addComponent(
     new Transform({
-      position: new Vector3(1.94, -1.05, 0.04),
+      position: new Vector3(0.94, -1.05, 0.14),
       rotation: Quaternion.Euler(0, 180, 0),
     })
   )
@@ -78,12 +79,12 @@ export async function createEventsBoard(position: TranformConstructorArgs) {
   coords.getComponent(TextShape).font = new Font(Fonts.SanFrancisco)
   coords.getComponent(TextShape).color = Color3.Black()
   coords.getComponent(TextShape).hTextAlign = 'left'
-  coords.setParent(boardBase)
+  //coords.setParent(boardBase)
 
   coordsBackSide.addComponent(new TextShape(''))
   coordsBackSide.addComponent(
     new Transform({
-      position: new Vector3(1.75, -1.555, 0.04),
+      position: new Vector3(2.75, -1.555, 0.04),
       rotation: Quaternion.Euler(0, 180, 0),
     })
   )
@@ -91,13 +92,13 @@ export async function createEventsBoard(position: TranformConstructorArgs) {
   coordsBackSide.getComponent(TextShape).font = new Font(Fonts.SanFrancisco)
   coordsBackSide.getComponent(TextShape).color = Color3.Black()
   coordsBackSide.getComponent(TextShape).hTextAlign = 'left'
-  coordsBackSide.setParent(boardBase)
+  //coordsBackSide.setParent(boardBase)
 
   clickPanel.addComponent(invisibleMaterial)
   clickPanel.addComponent(new PlaneShape())
   clickPanel.addComponent(
     new Transform({
-      scale: new Vector3(5, 4.5, 1),
+      scale: new Vector3(15, 14.5, 10),
       position: new Vector3(0, 0, -0.2),
     })
   )
@@ -107,7 +108,7 @@ export async function createEventsBoard(position: TranformConstructorArgs) {
   clickPanelBackSide.addComponent(new PlaneShape())
   clickPanelBackSide.addComponent(
     new Transform({
-      scale: new Vector3(5, 4.5, 1),
+      scale: new Vector3(15, 14.5, 10),
       position: new Vector3(0, 0, 0.2),
     })
   )
@@ -221,38 +222,23 @@ export function createDots(dotAmount: number) {
 export function displayEvent(events: any[], currentEvent: number) {
   if (events.length <= 0) return
   let event = events[currentEvent]
-  imageMaterial.albedoTexture = new Texture(event.image)
-  image.addComponentOrReplace(imageMaterial)
-  imageBackSide.addComponentOrReplace(imageMaterial)
-  let eventCoords = event.x.toString() + ',' + event.y.toString()
-  if (event.scene_name) {
-    eventCoords = shortenText(event.scene_name, 25) + '  ' + eventCoords
+  log(event.json_metadata.image)
+  if (event.json_metadata.image) {
+    imageMaterial.albedoTexture = new Texture(event.json_metadata.image[0])
+    image.addComponentOrReplace(imageMaterial)
+    imageBackSide.addComponentOrReplace(imageMaterial)
   }
 
-  title.getComponent(TextShape).value = splitTextIntoLines(event.name, 24, 2)
-  titleBackSide.getComponent(TextShape).value = splitTextIntoLines(
-    event.name,
-    24,
-    2
-  )
+  let eventCoords = ''
+  if (event.body) {
+    eventCoords = event.body
+  }
+
+  title.getComponent(TextShape).value = event.body
+  titleBackSide.getComponent(TextShape).value = event.body
+
   coords.getComponent(TextShape).value = eventCoords
   coordsBackSide.getComponent(TextShape).value = eventCoords
-  clickPanel.addComponentOrReplace(
-    new OnPointerDown(
-      (e) => {
-        teleportTo(event.x.toString() + ',' + event.y.toString())
-      },
-      { hoverText: 'Teleport to event' }
-    )
-  )
-  clickPanelBackSide.addComponentOrReplace(
-    new OnPointerDown(
-      (e) => {
-        teleportTo(event.x.toString() + ',' + event.y.toString())
-      },
-      { hoverText: 'Teleport to event' }
-    )
-  )
 
   if (dots.length <= 0 && events.length > 1) {
     createDots(events.length)
